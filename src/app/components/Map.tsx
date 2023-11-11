@@ -4,7 +4,7 @@ import mapboxgl from 'mapbox-gl';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoicmstc2N1IiwiYSI6ImNsb3VqenEycTBjZnYyamxzZW03YXNwN3kifQ.8F1qz8MDLwT6Fnt3CmLQzQ';
 
-const MapComponent = () => {
+const Map = () => {
   const mapContainerRef = useRef(null);
 
   useEffect(() => {
@@ -54,4 +54,4 @@ const MapComponent = () => {
   return <div ref={mapContainerRef} style={{ width: '100%', height: '100vh' }} />;
 };
 
-export default MapComponent;
+export default Map;
