@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import styles from './page.module.css'
+import MapComponent from './MapComponent'
 
 export default function Home() {
   return (
@@ -90,6 +91,7 @@ export default function Home() {
           </p>
         </a>
       </div>
+      <MapComponent />
     </main>
   )
 }
