@@ -14,15 +14,20 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 interface GeolocationPosition {
   coords: {
+    sessionID: string;
     latitude: number;
     longitude: number;
   };
 }
 
-const Map = () => {
+const Map = ({ sessionID, latestData, setLatestData }: { sessionID: string, latestData: any, setLatestData: (data: any) => void }) => {
   const [map, setMap] = useState<any>();
   const [currentLocation, setCurrentLocation] = useState<any>({});
   const [destination, setDestination] = useState<any>({});
+  const [hazardVisible, setHazardVisible] = useState(false);
+  const showHazard = () => {
+    setHazardVisible(!hazardVisible);
+  };
 
   const mapContainerRef = useRef(null);
 
@@ -50,7 +55,7 @@ const Map = () => {
 
     map.on("load", () => {
       geolocate.trigger();
-      // map.addControl(new MapboxTraffic());
+      // // map.addControl(new MapboxTraffic());
     });
 
     // go to user's location

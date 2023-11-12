@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-traffic": "^1.0.2",
     "@mapbox/search-js-core": "^1.0.0-beta.18",
     "@mapbox/search-js-react": "^1.0.0-beta.18",
     "@mapbox/search-js-web": "^1.0.0-beta.18",
@@ -20,6 +19,7 @@
     "react-dom": "^18",
     "react-map-gl": "^7.1.6",
     "react-speech-recognition": "^3.10.0",
+    "react-use-websocket": "^4.5.0",
     "regenerator-runtime": "^0.13.11",
     "uuid": "^9.0.1"
   },
