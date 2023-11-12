@@ -5,6 +5,7 @@ import { MAPBOX_ACCESS_TOKEN } from "@/constants";
 import { getRoute } from "@/api/mapbox";
 import { SearchBox } from "@mapbox/search-js-react";
 import { isObjectEmpty } from "@/helpers";
+import Hazard from "./Hazard";
 const MapboxTraffic = require("@mapbox/mapbox-gl-traffic");
 
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -167,6 +168,7 @@ const Map = () => {
 
   return (
     <div className="w-1/2 h-full">
+      <Hazard></Hazard>
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
         onRetrieve={selectAddress}
