@@ -4,37 +4,90 @@ import { FC, useEffect} from "react";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
-import { MAPBOX_ACCESS_TOKEN } from "@/constants";
+import { MAPBOX_ACCESS_TOKEN } from "@/app/utils/constants";
 import {AddressAutofillCore, SessionToken, SearchBoxCore} from '@mapbox/search-js-core'
 import { useContext } from "react";
 import { MapContext } from "./Map";
+import { chat } from "../utils/chat";
 
 
 interface TextProps { }
 
 const SpeechToText: FC<TextProps> = ({ }) => {
-    const {route} = useContext(MapContext)
+    const {route, currentLocation, sessionID, setIsListening} = useContext(MapContext)
 
     const commands = [{
         command: "Roadside *",
         callback: async (command: any) => {
             console.log(`${command}`)
 
-            // api response = {}
-            const response = {
-                action: "add_stop",
-                details: ["Taco Bell"],
-                asst_resp: "Sure, I've added Taco Bell as a stop. Is there anything else you need help with?"
-            }
+            // api response
+            console.log("sessionID: ", sessionID)
+            const response = await chat(sessionID, command)
+            const responseText = JSON.parse(response.response_text)
+            console.log("response: ", Object.keys(response))
             console.log("response: ", response)
+            console.log("response_text: ", response.response_text)
+            console.log("response_text: ", JSON.parse(response.response_text))
+            console.log("ttl_url: ", response.tts_url)
+            console.log("metadata: ", response.metadata)
+            
+            // play confirmation
+            if (response.tts_url){
+                const audio = new Audio(response.tts_url);
+                audio.play()
+            }
 
+            // const stop_response = {
+            //     action: "add_stop",
+            //     details: ["Taco Bell"],
+            //     asst_resp: "Sure, I've added Taco Bell as a stop. Is there anything else you need help with?"
+            // }
+            // console.log("response: ", stop_response)
+            
             // const locations = response.details.map(addStopCoordinates)
-            if (response.action === "add_stop"){
-                const locations = await Promise.all(response.details.map(addStopCoordinates));
+            if (responseText.action === "add_stop"){
+                if (typeof responseText.details === 'string') {
+                    responseText.details = [responseText.details]
+                }
+                console.log("response.details: ", responseText.details)
+                const locations = await Promise.all(responseText.details.map(addStopCoordinates));
                 console.log("locations: ", locations)
                 route(locations)
             }
-            // SpeechRecognition.startListening()
+            SpeechRecognition.startListening()
+
+
+            // const park_response = {
+            //     action: "park",
+            //     asst_resp: {
+            //         metadata: {
+            //             action_result: {
+            //                 result: [{
+            //                     point : {
+            //                         type: "Point",
+            //                         coordinates: [
+            //                           -122.421191821397,
+            //                           37.746757
+            //                         ]
+            //                       },
+            //                     }
+            //                 ]
+            //             }
+            //         }
+            //     }
+            // }
+            // const result = park_response.asst_resp.metadata.action_result
+            // if (park_response.action === "park"){
+            //     const longitude = result.result[0].point.coordinates[0]
+            //     const latitude = result.result[0].point.coordinates[1]
+            //     const location = {
+            //         longitude: longitude,
+            //         latitude: latitude,
+            //     }
+            //     console.log("location", location)
+            //     route([location])
+            // }
 
         }
     }]
@@ -65,38 +118,23 @@ const SpeechToText: FC<TextProps> = ({ }) => {
         return <span>Browser does not support speech recognition.</span>;
     }
 
-    // while(1){
-    //     SpeechRecognition.startListening()
-    // }
-
-
-
     useEffect(() => {
         if (listening === false){
             // process text
             // console.log(transcript)
             // console.log("interimTranscript: ", interimTranscript)
             // console.log("finalTranscript: ", finalTranscript)
-
-            // SpeechRecognition.startListening()
+            setIsListening(true)
             SpeechRecognition.startListening();
+        } else {
+            // setIsListening(false)
+            // console.log("transcript: ", transcript)
         }
-        // SpeechRecognition.startListening({ continuous: true });
-
     },[listening])
 
     return (
-        <div>
-            <h1 className="lg:text-5xl font-bold underline decoration-wavy text-2xl">
-                Speech to text
-            </h1>
+        <div className="text-white">
             <span className="ml-2 font-bold text-xl bg-base-100">generated text: {transcript}</span>
-            <p className="mb-2 text-xl font-bold">Microphone: {listening ? 'Listing to your voice..' : 'off'}</p>
-            <div className="flex gap-3">
-                <button className="btn btn-primary btn-sm" onClick={() => SpeechRecognition.startListening()}>Start</button>
-                <button className="btn btn-secondary btn-sm" onClick={SpeechRecognition.stopListening}>Stop</button>
-                <button className="btn btn-accent btn-sm" onClick={resetTranscript}>Reset</button>
-            </div>
         </div>
     );
 };

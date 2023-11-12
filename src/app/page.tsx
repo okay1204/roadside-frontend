@@ -40,7 +40,7 @@ export default function Home() {
     }
 
     return (
-        <div className="flex items-center justify-center h-screen w-screen bg-gray-800">
+        <div className="flex items-center justify-center h-screen w-screen bg-[#2A2D34]">
             <Map sessionID={sessionID} latestData={latestData} setLatestData={setLatestData}/>
             <WebsocketListener callback={handleListen} />
         </div>
