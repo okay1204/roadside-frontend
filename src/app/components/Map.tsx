@@ -5,7 +5,7 @@ import { MAPBOX_ACCESS_TOKEN } from "@/app/utils/constants";
 import { getRoute } from "@/api/mapbox";
 import { SearchBox } from "@mapbox/search-js-react";
 import { isObjectEmpty } from "@/app/utils/helpers";
-import Hazard from "./Hazard";
+// import Hazard from "./Hazard";
 import SpeechToText from "./SpeechToText";
 // import WebsocketListener from "./WebsocketListener";
 import StepsNavigator from "./StepsNavigator";
@@ -30,11 +30,9 @@ const Map = ({ sessionID, latestData, setLatestData }: { sessionID: string, late
   // const [steps, setSteps] = useState<any>([]);
   const [results, setResults] = useState<any>({});
   const [isListening, setIsListening] = useState<boolean>(false)
-  const [hazardVisible, setHazardVisible] = useState(false);
+  // const [hazardVisible, setHazardVisible] = useState(false);
   const [reset, setReset] = useState(false)
-  const showHazard = () => {
-    setHazardVisible(!hazardVisible);
-  };
+
 
   const mapContainerRef = useRef(null);
 
@@ -123,7 +121,6 @@ const Map = ({ sessionID, latestData, setLatestData }: { sessionID: string, late
     return () => map.remove();
   }, [reset]);
 
-// const [stopIndex, setStopIndex] = useState(0)
 const route = async (l: any) => {
   // const home = {
   //   longitude: -121.965880,
@@ -148,7 +145,6 @@ const route = async (l: any) => {
   const results = await getRoute(locations)
   setResults(results)
   console.log("Steps: ", results.steps)
-  // setSteps(resu)
 
   if (results.geojson){
     if (map.getSource('route')) {
@@ -224,45 +220,19 @@ const route = async (l: any) => {
 
     route([]);
 
-    // map.addLayer({
-    //   id: `final_destination`
-    //   type: 'circle',
-    //   source: {
-    //     type: 'geojson',
-    //     data: {
-    //       type: 'FeatureCollection',
-    //       features: [
-    //         {
-    //           type: 'Feature',
-    //           properties: {},
-    //           geometry: {
-    //             type: 'Point',
-    //             coordinates: [location.longitude,location.latitude]
-    //           }
-    //         }
-    //       ]
-    //     }
-    //   },
-    //   paint: {
-    //     'circle-radius': 10,
-    //     'circle-color': '#f30'
-    //   }
-    // });
   };
 
   useEffect(() => {
     if (!isObjectEmpty(destination)) {
-      // console.log("Destination: ", destination)
       route([]);
     }
-    // route()
   }, [destination]);
   
   
 
   return (
     <MapContext.Provider value={{route, currentLocation, sessionID, setIsListening, reset, setReset}}>
-      <div className='w-1/2 h-full'>
+      <div className='flex flex-col w-1/2 h-full'>
         <div className="flex bg-[#0A0A0A]">
           <div className="flex-1 p-4">
             <SearchBox accessToken={MAPBOX_ACCESS_TOKEN} onRetrieve={selectAddress} value={'Enter an address:'}></SearchBox>
@@ -281,11 +251,10 @@ const route = async (l: any) => {
         <div ref={mapContainerRef} className="h-full"/>
         {/* <button className='w-10 h-10 bg-black text-white rounded-md' onClick={() => {route([])}}>Test</button> */}
         {!isObjectEmpty(results) && <InfoNavigator duration={results.duration} distance={results.distance}/>}
-        {hazardVisible && (<Hazard/>)}
-      </div>
 
-      <div>
-        <SpeechToText/>
+        <div>
+          <SpeechToText/>
+        </div>
       </div>
 
       {/* <div>

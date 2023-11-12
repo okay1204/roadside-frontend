@@ -23,10 +23,10 @@ export async function chat(session_id: string, text: string) {
     let json = await data.json();
     console.log('RECIEVE CHAT')
 
-    // // Play json.tts_url audio
-    // let audio = new Audio(json.tts_url);
-    // console.log(audio)
-    // audio.play();
+    // Play json.tts_url audio
+    let audio = new Audio(json.tts_url);
+    console.log(audio)
+    audio.play();
 
     // Return json
     return json;

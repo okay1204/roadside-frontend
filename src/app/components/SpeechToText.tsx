@@ -11,6 +11,7 @@ import { MapContext } from "./Map";
 import { chat } from "../utils/chat";
 
 
+
 interface TextProps { }
 
 const SpeechToText: FC<TextProps> = ({ }) => {
@@ -20,6 +21,47 @@ const SpeechToText: FC<TextProps> = ({ }) => {
         command: "Roadside *",
         callback: async (command: any) => {
             console.log(`${command}`)
+            
+            let confirmation = new Audio('http://localhost:8000/static/Blow.mp3')
+            confirmation.play()
+
+            if (command.split(" ").includes("parking")){
+                console.log("finding parking")
+
+                const park_response = {
+                action: "park",
+                asst_resp: {
+                    metadata: {
+                            action_result: {
+                                result: [{
+                                    point : {
+                                        type: "Point",
+                                        coordinates: [
+                                        -122.469128,
+                                        37.77148
+                                        ]
+                                    },
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+
+                const result = park_response.asst_resp.metadata.action_result
+                if (park_response.action === "park"){
+                    const longitude = result.result[0].point.coordinates[0]
+                    const latitude = result.result[0].point.coordinates[1]
+                    const location = {
+                        longitude: longitude,
+                        latitude: latitude,
+                    }
+                    console.log("location", location)
+                    route([location])
+                }
+
+                // return 
+            }
 
             // api response
             console.log("sessionID: ", sessionID)
@@ -58,27 +100,8 @@ const SpeechToText: FC<TextProps> = ({ }) => {
             SpeechRecognition.startListening()
 
 
-            // const park_response = {
-            //     action: "park",
-            //     asst_resp: {
-            //         metadata: {
-            //             action_result: {
-            //                 result: [{
-            //                     point : {
-            //                         type: "Point",
-            //                         coordinates: [
-            //                           -122.421191821397,
-            //                           37.746757
-            //                         ]
-            //                       },
-            //                     }
-            //                 ]
-            //             }
-            //         }
-            //     }
-            // }
-            // const result = park_response.asst_resp.metadata.action_result
-            // if (park_response.action === "park"){
+            // const result = response.asst_resp.metadata.action_result
+            // if (response.action === "park"){
             //     const longitude = result.result[0].point.coordinates[0]
             //     const latitude = result.result[0].point.coordinates[1]
             //     const location = {
@@ -88,7 +111,6 @@ const SpeechToText: FC<TextProps> = ({ }) => {
             //     console.log("location", location)
             //     route([location])
             // }
-
         }
     }]
 
@@ -133,8 +155,8 @@ const SpeechToText: FC<TextProps> = ({ }) => {
     },[listening])
 
     return (
-        <div className="text-white">
-            <span className="ml-2 font-bold text-xl bg-base-100">generated text: {transcript}</span>
+        <div className="text-black">
+            <span className="ml-2 font-bold text-xl bg-base-100">Input: {transcript}</span>
         </div>
     );
 };
