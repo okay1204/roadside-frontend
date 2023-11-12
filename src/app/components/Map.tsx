@@ -21,7 +21,10 @@ const Map = () => {
   const [map, setMap] = useState<any>();
   const [currentLocation, setCurrentLocation] = useState<any>({});
   const [destination, setDestination] = useState<any>({});
-
+  const [hazardVisible, setHazardVisible] = useState(false);
+  const showHazard = () => {
+    setHazardVisible(!hazardVisible);
+  };
   const mapContainerRef = useRef(null);
 
   useEffect(() => {
@@ -168,7 +171,13 @@ const Map = () => {
 
   return (
     <div className="w-1/2 h-full">
-      <Hazard></Hazard>
+      {hazardVisible && <Hazard />} {/* Conditionally render Hazard */}
+      <button
+        onClick={showHazard}
+        className="w-10 h-10 bg-black text-white rounded-md"
+      >
+        Toggle Hazard
+      </button>
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
         onRetrieve={selectAddress}
