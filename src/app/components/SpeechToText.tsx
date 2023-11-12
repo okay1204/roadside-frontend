@@ -1,6 +1,6 @@
 "use client"
 //@ts-nocheck
-import { FC } from "react";
+import { FC, useEffect} from "react";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
@@ -8,16 +8,44 @@ import SpeechRecognition, {
 interface TextProps { }
 
 const SpeechToText: FC<TextProps> = ({ }) => {
+    const commands = [{
+        command: "Roadside *",
+        callback: (command: any) => {
+            console.log(`${command}`)
+            // SpeechRecognition.startListening()
+        }
+    }]
+
     const {
         transcript,
         listening,
         resetTranscript,
         browserSupportsSpeechRecognition,
-    } = useSpeechRecognition();
+    } = useSpeechRecognition({commands});
 
     if (!browserSupportsSpeechRecognition) {
         return <span>Browser does not support speech recognition.</span>;
     }
+
+    // while(1){
+    //     SpeechRecognition.startListening()
+    // }
+
+
+
+    useEffect(() => {
+        if (listening === false){
+            // process text
+            // console.log(transcript)
+            // console.log("interimTranscript: ", interimTranscript)
+            // console.log("finalTranscript: ", finalTranscript)
+
+            // SpeechRecognition.startListening()
+            SpeechRecognition.startListening();
+        }
+        // SpeechRecognition.startListening({ continuous: true });
+
+    },[listening])
 
     return (
         <div>

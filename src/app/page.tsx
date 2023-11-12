@@ -9,9 +9,8 @@ const SpeechToText = dynamic(() => import('./components/SpeechToText'), { ssr: f
 export default function Home() {
 
     return (
-        <main>
-            <SpeechToText />
-            <Map />
-        </main>
+        <div className="flex items-center justify-center h-screen w-screen bg-gray-800">
+            <Map/>
+        </div>
     )
 }
