@@ -9,21 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "mapbox-gl": "^2.15.0",
     "next": "14.0.2",
     "react": "^18",
     "react-dom": "^18",
     "react-speech-recognition": "^3.10.0",
-    "regenerator-runtime": "^0.13.11",
-    "mapbox-gl": "^2.15.0"
+    "react-use-websocket": "^4.5.0",
+    "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
+    "@types/mapbox__mapbox-gl-geocoder": "^4.7.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-map-gl": "^6.1.6",
     "@types/react-speech-recognition": "^3.9.2",
     "@types/regenerator-runtime": "^0.13.1",
-    "@types/mapbox__mapbox-gl-geocoder": "^4.7.7",
-    "@types/react-map-gl": "^6.1.6",
     "autoprefixer": "^10.4.16",
     "eslint": "^8",
     "eslint-config-next": "14.0.2",
