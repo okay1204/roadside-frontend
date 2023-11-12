@@ -101,13 +101,20 @@ const Map = () => {
   }, []);
 
 const route = async () => {
-  // const test = {
-  //   longitude: -121.965880,
-  //   latitude:37.399480,
-  // }
+  const test = {
+    longitude: -121.965880,
+    latitude: 37.399480,
+  }
+
+  const test_2 = { 
+    longitude: -121.960830,
+    latitude: 37.350798,
+  }
 
   // const geojson = await getRoute(currentLocation, test)
-  const { geojson } = await getRoute(currentLocation, destination)
+  // const { geojson } = await getRoute(currentLocation, destination)
+  const locations = [currentLocation, test, test_2]
+  const { geojson } = await getRoute(locations)
 
   if (geojson){
     if (map.getSource('route')) {
@@ -133,6 +140,37 @@ const route = async () => {
         }
       });
     }
+  }
+
+  // add routes
+  let index = 0
+  for (const location of locations){
+    index = index + 1 
+
+    map.addLayer({
+      id: `stop_${index}`,
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [location.longitude,location.latitude]
+              }
+            }
+          ]
+        }
+      },
+      paint: {
+        'circle-radius': 10,
+        'circle-color': '#f30'
+      }
+    });
   }
 }
 
@@ -166,7 +204,7 @@ const selectAddress = (result: any) => {
     <div className='w-1/2 h-full'>
         <SearchBox accessToken={MAPBOX_ACCESS_TOKEN} onRetrieve={selectAddress} value={'Enter an address:'}></SearchBox>
         <div ref={mapContainerRef} style={{ width: '100%', height: '100vh' }} />
-        {/* <button className='w-10 h-10 bg-black text-white rounded-md' onClick={route}>Test</button> */}
+        <button className='w-10 h-10 bg-black text-white rounded-md' onClick={route}>Test</button>
     </div>
 
   );

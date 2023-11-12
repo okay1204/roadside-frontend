@@ -1,10 +1,15 @@
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_API_BASE_URL } from "@/constants";
+import { coordinatesString } from "@/helpers";
 
-export async function getRoute(start: any, end: any, profile: string = 'driving-traffic', geometries: string = 'geojson') {
-  const apiUrl = `${MAPBOX_API_BASE_URL}/directions/v5/mapbox/${profile}/${start.longitude},${start.latitude};${end.longitude},${end.latitude}?steps=true&geometries=${geometries}&access_token=${MAPBOX_ACCESS_TOKEN}`
+export const getRoute = async (locations: any, profile: string = 'driving-traffic', geometries: string = 'geojson') => {
+    const l = coordinatesString(locations)
+    console.log(l)
 
-  try {
-    const response = await fetch(apiUrl);
+    const apiUrl = `${MAPBOX_API_BASE_URL}/directions/v5/mapbox/${profile}/${l}?steps=true&geometries=${geometries}&access_token=${MAPBOX_ACCESS_TOKEN}`
+    // const apiUrl = `${MAPBOX_API_BASE_URL}/directions/v5/mapbox/${profile}/${start.longitude},${start.latitude};${end.longitude},${end.latitude}?steps=true&geometries=${geometries}&access_token=${MAPBOX_ACCESS_TOKEN}`
+
+    try {
+      const response = await fetch(apiUrl);
 
     if (!response.ok) {
       throw new Error('Failed to fetch directions');
@@ -27,6 +32,7 @@ export async function getRoute(start: any, end: any, profile: string = 'driving-
       geojson: geojson,
       distance: data.distance,
       duration: data.duration, // seconds
+      legs: data.legs, // legs
       steps: data.legs[0].steps // steps
     }
     console.log(result)
