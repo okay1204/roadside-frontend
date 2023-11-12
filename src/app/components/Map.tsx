@@ -108,13 +108,20 @@ const Map = () => {
   }, []);
 
   const route = async () => {
-    // const test = {
-    //   longitude: -121.965880,
-    //   latitude:37.399480,
-    // }
+    const test = {
+      longitude: -121.96588,
+      latitude: 37.39948,
+    };
+
+    const test_2 = {
+      longitude: -121.96083,
+      latitude: 37.350798,
+    };
 
     // const geojson = await getRoute(currentLocation, test)
-    const { geojson } = await getRoute(currentLocation, destination);
+    // const { geojson } = await getRoute(currentLocation, destination)
+    const locations = [currentLocation, test, test_2];
+    const { geojson } = await getRoute(locations);
 
     if (geojson) {
       if (map.getSource("route")) {
@@ -140,6 +147,37 @@ const Map = () => {
           },
         });
       }
+    }
+
+    // add routes
+    let index = 0;
+    for (const location of locations) {
+      index = index + 1;
+
+      map.addLayer({
+        id: `stop_${index}`,
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                properties: {},
+                geometry: {
+                  type: "Point",
+                  coordinates: [location.longitude, location.latitude],
+                },
+              },
+            ],
+          },
+        },
+        paint: {
+          "circle-radius": 10,
+          "circle-color": "#f30",
+        },
+      });
     }
   };
 
@@ -171,13 +209,7 @@ const Map = () => {
 
   return (
     <div className="w-1/2 h-full">
-      {hazardVisible && <Hazard />} {/* Conditionally render Hazard */}
-      <button
-        onClick={showHazard}
-        className="w-10 h-10 bg-black text-white rounded-md"
-      >
-        Toggle Hazard
-      </button>
+      <Hazard></Hazard>
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
         onRetrieve={selectAddress}
