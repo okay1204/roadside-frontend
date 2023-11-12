@@ -6,23 +6,41 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { MAPBOX_ACCESS_TOKEN } from "@/constants";
 import {AddressAutofillCore, SessionToken, SearchBoxCore} from '@mapbox/search-js-core'
+import { useContext } from "react";
+import { MapContext } from "./Map";
 
 
 interface TextProps { }
 
 const SpeechToText: FC<TextProps> = ({ }) => {
+    const {route} = useContext(MapContext)
+
     const commands = [{
         command: "Roadside *",
-        callback: (command: any) => {
+        callback: async (command: any) => {
             console.log(`${command}`)
+
             // api response = {}
-            
+            const response = {
+                action: "add_stop",
+                details: ["Taco Bell"],
+                asst_resp: "Sure, I've added Taco Bell as a stop. Is there anything else you need help with?"
+            }
+            console.log("response: ", response)
+
+            // const locations = response.details.map(addStopCoordinates)
+            if (response.action === "add_stop"){
+                const locations = await Promise.all(response.details.map(addStopCoordinates));
+                console.log("locations: ", locations)
+                route(locations)
+            }
             // SpeechRecognition.startListening()
+
         }
     }]
 
-    const addStopCoordinates = async (location: any) => {
-        const search = new SearchBoxCore({ accessToken: 'pk.my-mapbox-access-token' });
+    const addStopCoordinates = async (location: string) => {
+        const search = new SearchBoxCore({ accessToken: MAPBOX_ACCESS_TOKEN});
 
         const sessionToken = new SessionToken();
         const result = await search.suggest(location, { sessionToken });
@@ -30,7 +48,10 @@ const SpeechToText: FC<TextProps> = ({ }) => {
 
         const suggestion = result.suggestions[0];
         const { features } = await search.retrieve(suggestion, { sessionToken });
-        return features
+        return {
+            longitude: features[0].geometry.coordinates[0],
+            latitude: features[0].geometry.coordinates[1]
+        }
     }
 
     const {

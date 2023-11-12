@@ -1,6 +1,7 @@
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_API_BASE_URL } from "@/constants";
 import { coordinatesString } from "@/helpers";
 
+
 export const getRoute = async (locations: any, profile: string = 'driving-traffic', geometries: string = 'geojson') => {
     const l = coordinatesString(locations)
     console.log(l)

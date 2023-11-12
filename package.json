@@ -20,7 +20,8 @@
     "react-dom": "^18",
     "react-map-gl": "^7.1.6",
     "react-speech-recognition": "^3.10.0",
-    "regenerator-runtime": "^0.13.11"
+    "regenerator-runtime": "^0.13.11",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/mapbox__mapbox-gl-geocoder": "^4.7.7",
