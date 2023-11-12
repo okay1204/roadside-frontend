@@ -1,12 +1,14 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, createContext } from "react";
 import mapboxgl from "mapbox-gl";
 import { MAPBOX_ACCESS_TOKEN } from "@/constants";
 import { getRoute } from "@/api/mapbox";
 import { SearchBox } from "@mapbox/search-js-react";
 import { isObjectEmpty } from "@/helpers";
 import Hazard from "./Hazard";
-const MapboxTraffic = require("@mapbox/mapbox-gl-traffic");
+// const MapboxTraffic = require("@mapbox/mapbox-gl-traffic");
+
+export const MapContext = createContext({});
 
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
@@ -48,7 +50,7 @@ const Map = () => {
 
     map.on("load", () => {
       geolocate.trigger();
-      map.addControl(new MapboxTraffic());
+      // map.addControl(new MapboxTraffic());
     });
 
     // go to user's location
@@ -203,13 +205,17 @@ const route = async () => {
     }
     // route()
   }, [destination]);
+  
+  
 
   return (
-    <div className='w-1/2 h-full'>
+    <MapContext.Provider value={{map, setMap}}>
+      <div className='w-1/2 h-full'>
         <SearchBox accessToken={MAPBOX_ACCESS_TOKEN} onRetrieve={selectAddress} value={'Enter an address:'}></SearchBox>
         <div ref={mapContainerRef} style={{ width: '100%', height: '100vh' }} />
         <button className='w-10 h-10 bg-black text-white rounded-md' onClick={route}>Test</button>
-    </div>
+      </div>
+    </MapContext.Provider>
   );
 };
 

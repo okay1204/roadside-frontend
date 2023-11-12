@@ -4,6 +4,9 @@ import { FC, useEffect} from "react";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
+import { MAPBOX_ACCESS_TOKEN } from "@/constants";
+import {AddressAutofillCore, SessionToken, SearchBoxCore} from '@mapbox/search-js-core'
+
 
 interface TextProps { }
 
@@ -12,9 +15,23 @@ const SpeechToText: FC<TextProps> = ({ }) => {
         command: "Roadside *",
         callback: (command: any) => {
             console.log(`${command}`)
+            // api response = {}
+            
             // SpeechRecognition.startListening()
         }
     }]
+
+    const addStopCoordinates = async (location: any) => {
+        const search = new SearchBoxCore({ accessToken: 'pk.my-mapbox-access-token' });
+
+        const sessionToken = new SessionToken();
+        const result = await search.suggest(location, { sessionToken });
+        if (result.suggestions.length === 0) return;
+
+        const suggestion = result.suggestions[0];
+        const { features } = await search.retrieve(suggestion, { sessionToken });
+        return features
+    }
 
     const {
         transcript,
