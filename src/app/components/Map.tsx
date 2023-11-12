@@ -209,7 +209,7 @@ const Map = () => {
 
   return (
     <div className="w-1/2 h-full">
-      <Hazard></Hazard>
+      {hazardVisible && <Hazard />}
       <SearchBox
         accessToken={MAPBOX_ACCESS_TOKEN}
         onRetrieve={selectAddress}
