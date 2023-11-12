@@ -37,16 +37,45 @@ const Map = () => {
         };
       }
 
-    geolocate.on('geolocate', (e) => {
+      geolocate.on('geolocate', (e) => {
         const position = e as GeolocationPosition;
         map.flyTo({
             center: [position.coords.longitude, position.coords.latitude],
             essential: true,
             zoom: 10,
         });
+    
+        if (!map.getSource('user-location')) {
+            map.addSource('user-location', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [position.coords.longitude, position.coords.latitude]
+                    }
+                }
+            });
+            
+            map.addLayer({
+                'id': 'user-location',
+                'type': 'circle',
+                'source': 'user-location',
+                'paint': {
+                    'circle-radius': 5,
+                    'circle-color': '#007cbf'
+                }
+            });
+        } else {
+            map.getSource('user-location').setData({
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [position.coords.longitude, position.coords.latitude]
+                }
+            });
+        }
     });
-      
-      
 
     return () => map.remove();
   }, []);
