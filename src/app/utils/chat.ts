@@ -1,5 +1,6 @@
 // Make request to the server
 export async function chat(session_id: string, text: string) {
+    console.log('SEND CHAT')
     let data = await fetch('http://localhost:8000/chat/', {
         method: 'POST',
         body: JSON.stringify({ session_id, message: text }),
@@ -9,6 +10,7 @@ export async function chat(session_id: string, text: string) {
     });
 
     let json = await data.json();
+    console.log('RECIEVE CHAT')
 
     // Play json.tts_url audio
     let audio = new Audio(json.tts_url);

@@ -11,34 +11,38 @@ const SpeechToText = dynamic(() => import('./components/SpeechToText'), { ssr: f
 
 export default function Home() {
     const [sessionID, setSessionID] = useState<string>('');
+    const [latestData, setLatestData] = useState<any>({}); // latest data from websocket
 
     const handleListen = (data: any) => {
+        console.log('RECIEvED WEBSOCKET')
         // check if id exists. if it does, set the state
         if (data.id) {
             setSessionID(data.id);
             return
         }
 
-        // check if data.gpts exists
+        // check if data.gpts exists1
         if (!data.gpts) {
             return;
         }
 
         // loop through each object in data.gpts
-        console.log(data)
         const gpts = data.gpts;
         gpts.forEach((element: any) => {
             if (element.action === true) {
                 chat(sessionID, `Repeat this back to me: ${element.desc}`)
+                .then((res) => {
+                    setLatestData(res);
+                })
             }
         });
     }
 
     return (
-        <main>
+        <div className="flex items-center justify-center h-screen w-screen bg-gray-800">
             <SpeechToText />
-            <Map />
+            <Map sessionID={sessionID} latestData={latestData} setLatestData={setLatestData}/>
             <WebsocketListener callback={handleListen} />
-        </main>
+        </div>
     )
 }
